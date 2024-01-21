@@ -751,8 +751,12 @@ self: super: builtins.intersectAttrs super {
   # The tests expect additional solvers on the path, replace the
   # available ones also with hard coded paths, and remove the missing
   # ones from the test.
+  #
+  # The test suite for sbv-10.2 is inherently defective so we disable
+  # the tests for now.
+  #
   # TODO(@sternenseemann): package cvc5 and re-enable tests
-  sbv = overrideCabal (drv: {
+  sbv = dontCheck (overrideCabal (drv: {
     postPatch = ''
       sed -i -e 's|"abc"|"${pkgs.abc-verifier}/bin/abc"|' Data/SBV/Provers/ABC.hs
       sed -i -e 's|"bitwuzla"|"${pkgs.bitwuzla}/bin/bitwuzla"|' Data/SBV/Provers/Bitwuzla.hs
@@ -766,7 +770,7 @@ self: super: builtins.intersectAttrs super {
       sed -i -e 's|, mathSAT||' SBVTestSuite/SBVConnectionTest.hs
       sed -i -e 's|, dReal||' SBVTestSuite/SBVConnectionTest.hs
     '';
-  }) super.sbv;
+  }) super.sbv);
 
   # The test-suite requires a running PostgreSQL server.
   Frames-beam = dontCheck super.Frames-beam;
